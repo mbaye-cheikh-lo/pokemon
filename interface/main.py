@@ -1,7 +1,9 @@
 import pygame
+from pokedex import *
 
+show_pokedex()
 
-pygame.init()
+p1 = get_pokemon("Pikachu")
+p2 = get_pokemon("Salameche")
 
-if __name__ == "__main__":
-    pass
+print(p1.name, "VS", p2.name)
