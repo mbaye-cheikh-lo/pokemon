@@ -457,6 +457,9 @@ import random
 import os
 from Kombat import Combat
 from pokemon import Pokemon
+from pokedex_manager import pokedex_manager
+from victory_screen import show_victory_screen
+from evolution_system import evolution_system
 
 def run_battle(player_pokemon):
     """
@@ -625,6 +628,33 @@ def run_battle(player_pokemon):
         winner = combat.check_winner()
         if winner:
             print(f"Gagnant : {winner.nom}")
+            is_player_winner = (winner == player_pokemon)
+            
+            # Si victoire du joueur
+            if is_player_winner:
+                # Gagner XP et monter de niveau
+                leveled_up = player_pokemon.gain_xp(100)
+                if leveled_up:
+                    print(f"🎉 {player_pokemon.nom} est maintenant niveau {player_pokemon.level}!")
+                
+                # Ajouter l'adversaire au Pokédex
+                is_new_capture = pokedex_manager.add_pokemon(opponent_pokemon)
+                print(f"✨ Pokémon ajouté au Pokédex ! Nouvelle capture: {is_new_capture}")
+                
+                # Vérifier évolution
+                evolution_data = evolution_system.can_evolve(player_pokemon, player_pokemon.level)
+                if evolution_data:
+                    print(f"🌟 {player_pokemon.nom} peut évoluer en {evolution_data['evolves_to']} !")
+                    evolution_system.show_evolution_screen(screen, player_pokemon.nom, evolution_data["evolves_to"])
+                    player_pokemon = evolution_system.evolve_pokemon(player_pokemon, evolution_data)
+                    print(f"✅ Évolution réussie ! Bienvenue {player_pokemon.nom}")
+                
+                # Écran de victoire
+                show_victory_screen(screen, winner.nom, True, is_new_capture)
+            else:
+                # Écran de défaite
+                show_victory_screen(screen, winner.nom, False)
+            
             running = False
 
         # Full render
@@ -642,9 +672,10 @@ def run_battle(player_pokemon):
         text = font_health.render(f"{player_pokemon.nom}: {player_pokemon.life}/{player_pokemon.max_life}", True, DARK_GRAY)
         screen.blit(text, (player_bar_x, player_bar_y - 35))
 
-        # Opponent health bar
-        ratio = opponent_pokemon.life / opponent_pokemon.max_life if opponent_pokemon.max_life > 0 else 0
-        width = int(opp_bar_w * ratio)
+    # Fermer la musique mais PAS pygame
+    pygame.mixer.music.stop()
+    print("Combat terminé - retour au menu")
+    # Ne pas faire pygame.quit() ici ! On retourne juste au menu
         color = GREEN if ratio > 0.5 else (255, 200, 0) if ratio > 0.25 else RED
         pygame.draw.rect(screen, GRAY, (opp_bar_x, opp_bar_y, opp_bar_w, opp_bar_h))
         pygame.draw.rect(screen, color, (opp_bar_x, opp_bar_y, width, opp_bar_h))

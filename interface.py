@@ -5,6 +5,7 @@ import pygame
 import sys
 from draw_choice import main as choose_pokemon  # import selection screen
 from draw2 import run_battle  # import battle screen function
+from pokedex_viewer import show_pokedex  # import Pokédex viewer
 
 pygame.init()
 
@@ -72,43 +73,59 @@ pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(0.05)
 
 # MAIN MENU LOOP
-running = True
-while running:
-    clock.tick(60)
+def main_menu():
+    """Boucle principale du menu - retourne False pour quitter"""
+    running = True
+    while running:
+        clock.tick(60)
 
-    # Background
-    screen.blit(background, (0, 0))
+        # Background
+        screen.blit(background, (0, 0))
 
-    # TITLE
-    title_text = title_font.render("", True, BLACK)
-    title_rect = title_text.get_rect(center=(WIDTH//2, 150))
-    screen.blit(title_text, title_rect)
+        # TITLE
+        title_text = title_font.render("POKÉMON", True, BLACK)
+        title_rect = title_text.get_rect(center=(WIDTH//2, 150))
+        screen.blit(title_text, title_rect)
 
-    # BUTTONS
-    play_button.draw()
-    pokedex_button.draw()
-    quit_button.draw()
+        # BUTTONS
+        play_button.draw()
+        pokedex_button.draw()
+        quit_button.draw()
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
 
-        if play_button.is_clicked(event):
-            print("PLAY button pressed → launching selection")
-            selected_pokemon = choose_pokemon()  # Launch selection screen
-            if selected_pokemon:
-                print(f"Selected Pokémon: {selected_pokemon.nom}")
-                # Launch battle directly
-                run_battle(selected_pokemon)
+            if play_button.is_clicked(event):
+                print("PLAY button pressed → launching selection")
+                selected_pokemon = choose_pokemon()  # Launch selection screen
+                if selected_pokemon:
+                    print(f"Selected Pokémon: {selected_pokemon.nom}")
+                    # Launch battle directly
+                    run_battle(selected_pokemon)
+                    # Après le combat, on revient au menu (pas de pygame.quit())
+                    # Redémarrer la musique du menu
+                    pygame.mixer.music.load("assets/song_and_sound/Pokemon Red_Blue Opening.mp3")
+                    pygame.mixer.music.play(-1)
+                    pygame.mixer.music.set_volume(0.05)
 
-        if pokedex_button.is_clicked(event):
-            print("POKÉDEX button pressed (not implemented yet)")
+            if pokedex_button.is_clicked(event):
+                print("POKÉDEX button pressed → opening Pokédex")
+                show_pokedex()
 
-        if quit_button.is_clicked(event):
-            print("Quitting game")
-            pygame.quit()
-            sys.exit()
+            if quit_button.is_clicked(event):
+                print("Quitting game")
+                return False
 
-    pygame.display.flip()
+        pygame.display.flip()
+    
+    return False
 
-pygame.quit()
+# Lancer le menu principal
+if __name__ == "__main__":
+    keep_running = True
+    while keep_running:
+        keep_running = main_menu()
+    
+    pygame.quit()
+    sys.exit()
