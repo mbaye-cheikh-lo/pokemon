@@ -1,88 +1,81 @@
+
+from pokemon import Pokemon
+from data import types, matrice
+
 class Combat:
-    def __init__(self,player_Pokemon,attack,life1,defense,chance,type,player,ops_Pokemon,win):
-        self.player_pokemon=player_Pokemon
-        self.ops_pokemon=ops_Pokemon
-        self.attack= attack
-        self.life1= life1
-        self.defense=defense
-        self.chance=chance
-        self.type= type
-        self.player=player
-        self.win= win 
-        win=False
-
-
-    def type_puissance(self,type1,type2):
-
-        types = [
-        "Normal", "Combat", "Vol", "Poison", "Sol", "Roche",
-        "Insecte", "Spectre", "Acier", "Feu", "Eau", "Plante",
-        "Électrik", "Psy", "Glace", "Dragon", "Ténèbres", "Fée"
-        ]
-
-
-        matrice = [
-        # Nor  Com  Vol  Poi  Sol  Roc  Ins  Spe  Aci  Feu  Eau  Pla  Ele  Psy  Gla  Dra  Ten  Fée  
-        [ 1,   1,   1,   1,   1,  0.5,  1,   0,  0.5,  1,   1,   1,   1,   1,   1,   1,   1,   1 ],  # Normal
-        [ 2,   1,  0.5, 0.5,  1,   2,  0.5,  0,   2,   1,   1,   1,   1,  0.5,  2,   1,   2,  0.5 ],  # Combat
-        [ 1,   2,   1,   1,   1,  0.5,  2,   1,  0.5,  1,   1,   2,  0.5,  1,   1,   1,   1,   1 ],  # Vol
-        [ 1,  0.5,  1,   1,  0.5, 0.5,  1,  0.5,  0,   1,   1,   2,   1,   1,   1,   1,   1,   2 ],  # Poison
-        [ 1,   2,   0,   1,   1,   2,   1,   1,   2,   2,   1,  0.5,  2,  0.5,  1,   1,   1,   1 ],  # Sol
-        [ 1,  0.5,  2,   1,  0.5,  1,   2,   1,  0.5,  2,   1,   1,   1,   1,   2,   1,   1,   1 ],  # Roche
-        [ 1,  0.5, 0.5, 0.5,  1,   1,   1,  0.5, 0.5, 0.5,  1,   2,   1,   2,   1,   1,   2,  0.5 ],  # Insecte
-        [ 0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   2,   1,   1,  0.5,  1 ],  # Spectre
-        [ 1,   1,   1,   1,   1,   2,   1,   1,  0.5, 0.5, 0.5,  1,  0.5,  1,   2,  0.5,  1,   2 ],  # Acier
-        [ 1,   1,   1,   1,   1,  0.5,  2,   1,   2,  0.5, 0.5,  2,   1,   1,   2,  0.5,  1,   1 ],  # Feu
-        [ 1,   1,   1,   1,   2,   2,   1,   1,   1,   2,  0.5, 0.5,  1,   1,   1,  0.5,  1,   1 ],  # Eau
-        [ 1,   1,  0.5, 0.5,  2,   2,  0.5,  1,  0.5, 0.5,  2,  0.5,  1,   1,   1,  0.5,  1,   1 ],  # Plante
-        [ 1,   1,   2,   1,   0,   1,   1,   1,   1,   1,   2,  0.5, 0.5,  1,   1,  0.5,  1,   1 ],  # Électrik
-        [ 1,   2,   1,   2,   1,   1,   1,   1,  0.5,  1,   1,   1,   1,  0.5,  1,   1,   0,   1 ],  # Psy
-        [ 1,   1,   2,   1,   2,   1,   1,   1,  0.5, 0.5, 0.5,  2,   1,   1,  0.5,  2,   1,   1 ],  # Glace
-        [ 1,   1,   1,   1,   1,   1,   1,   1,  0.5,  1,   1,   1,   1,   1,   1,   2,   1,   0 ],  # Dragon
-        [ 1,  0.5,  1,   1,   1,   1,   1,   2,   1,   1,   1,   1,   1,   2,   1,   1,  0.5, 0.5 ],  # Ténèbres
-        [ 1,   2,   1,  0.5,  1,   1,   1,   1,  0.5, 0.5,  1,   1,   1,   1,   1,   2,   2,   1 ],  # Fée
-        ]
-    
-        i = types.index(type1)
-        j = types.index(type2)
-        power= matrice[i][j]
-        pw_attack=self.attack*power
-        return pw_attack
-    def new_life(self,pw_attack,defense):
-        damage= pw_attack-defense
-        if damage<0:
-            damage*(-1)
-            new_life= self.life-damage
-            self.life=new_life
-            return self.life
-        else:
-            defense=damage         
-    def winner_name(self):
-        self.win = False
-        if self.life1<=0:
-            self.win = True
-            return self.player,self.win
-        elif self.life2<=0:
-            self.win=True
-            return self.ops_pokemon, self.win
-
-    def pokemon_winner(self):
-           self.win = False
-        if self.life1<=0:
-            self.win = True
-            return self.player,self.win
-        elif self.life2<=0:
-            self.win=True
-            return self.ops_pokemon, self.win
-
-
-          
-          
+    def __init__(self, player_pokemon: Pokemon, opponent_pokemon: Pokemon):
+        self.player_pokemon = player_pokemon
+        self.opponent_pokemon = opponent_pokemon
         
+        self.player_max_life = player_pokemon.life
+        self.opponent_max_life = opponent_pokemon.life
         
+        self.turn = 1  # 1 = joueur, 2 = adversaire
+        self.state = "bataille"
+        self.winner = None
+
+    def type_puissance(self, type1: str, type2: str) -> float:
+        """Retourne le coefficient multiplicateur depuis la matrice de data.py"""
+        # Normalisation : enlève accents et met en majuscule
+        type1_clean = type1.replace("É", "E").replace("é", "e").capitalize()
+        type2_clean = type2.replace("É", "E").replace("é", "e").capitalize()
         
+        try:
+            i = types.index(type1_clean)
+            j = types.index(type2_clean)
+            return matrice[i][j]
+        except ValueError:
+            print(f"Type inconnu : {type1_clean} ou {type2_clean}")
+            return 1.0
 
-test= Combat(4,5,2,1,3,6)
-print(test.type_puissance("Eau", "Feu")) 
+    def calculate_damage(self, attacker: Pokemon, defender: Pokemon) -> int:
+        """Calcule les dégâts avec multiplicateur de type + power2"""
+        multiplier = self.type_puissance(attacker.type, defender.type)
+        base_damage = attacker.power2
+        damage = int(base_damage * multiplier)
+        
+        # Réduction par défense : beaucoup plus douce (÷5 au lieu de ÷2)
+        defense_reduction = defender.defense // 5
+        reduced = max(1, damage - defense_reduction)
+        
+        return reduced
 
+    def apply_damage(self, target: Pokemon, damage: int):
+        target.life -= damage
+        if target.life <= 0:
+            target.life = 0
 
+    def check_winner(self):
+        if self.player_pokemon.life <= 0:
+            self.winner = self.opponent_pokemon
+            self.state = "fini"
+            return self.opponent_pokemon
+        elif self.opponent_pokemon.life <= 0:
+            self.winner = self.player_pokemon
+            self.state = "fini"
+            return self.player_pokemon
+        return None
+
+    def next_turn(self):
+        self.turn += 1
+
+    def player_attack(self):
+        if self.state != "bataille" or self.check_winner():
+            return 0
+        damage = self.calculate_damage(self.player_pokemon, self.opponent_pokemon)
+        self.apply_damage(self.opponent_pokemon, damage)
+        self.next_turn()
+        return damage
+
+    def opponent_attack(self):
+        if self.state != "bataille" or self.check_winner():
+            return 0
+        damage = self.calculate_damage(self.opponent_pokemon, self.player_pokemon)
+        self.apply_damage(self.player_pokemon, damage)
+        self.next_turn()
+        return damage
+
+    def __str__(self):
+        return (f"Combat : {self.player_pokemon.nom} ({self.player_pokemon.life} PV) "
+                f"VS {self.opponent_pokemon.nom} ({self.opponent_pokemon.life} PV) "
+                f"- Tour {self.turn}")

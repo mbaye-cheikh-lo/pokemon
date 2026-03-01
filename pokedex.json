@@ -1,0 +1,9 @@
+{
+    "Pikachu": ["Pikachu", "Électrik", 55, 40, 100],
+    "Salameche": ["Salameche", "Feu", 52, 43, 100],
+    "Carapuce": ["Carapuce", "Eau", 48, 65, 110],
+    "Bulbizarre": ["Bulbizarre", "Plante", 49, 49, 105],
+    "Rondoudou": ["Rondoudou", "Fée", 45, 20, 120]
+
+
+}
