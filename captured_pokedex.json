@@ -1,0 +1,32 @@
+{
+    "Minidraco": {
+        "nom": "Minidraco",
+        "type": "Normal",
+        "power": 50,
+        "defense": 80,
+        "max_life": 100,
+        "first_captured": "2026-03-01 13:47:23",
+        "times_defeated": 1,
+        "total_xp_gained": 100
+    },
+    "Leveinard": {
+        "nom": "Leveinard",
+        "type": "Normal",
+        "power": 50,
+        "defense": 80,
+        "max_life": 100,
+        "first_captured": "2026-03-01 13:48:53",
+        "times_defeated": 1,
+        "total_xp_gained": 100
+    },
+    "Aspicot": {
+        "nom": "Aspicot",
+        "type": "Normal",
+        "power": 50,
+        "defense": 80,
+        "max_life": 100,
+        "first_captured": "2026-03-01 13:53:04",
+        "times_defeated": 1,
+        "total_xp_gained": 100
+    }
+}

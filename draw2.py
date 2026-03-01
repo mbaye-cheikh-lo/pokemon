@@ -505,20 +505,20 @@ def run_battle(player_pokemon):
         player_back_sprite = pygame.image.load(player_pokemon.sprite_dos).convert_alpha()
         player_back_sprite = pygame.transform.scale(player_back_sprite, (280, 280))
     except Exception as e:
-        print(f"Player back sprite not found → fallback")
+        print(f"Player back sprite not found - fallback")
         player_back_sprite = pygame.image.load("assets/spritePokemonDos_PokeAPI/95_onyx_dos.png").convert_alpha()
-        player_back_sprite = pygame.transform.scale(player_back_sprite, (300, 450))
+        player_back_sprite = pygame.transform.scale(player_back_sprite, (280, 280))
 
     try:
         opponent_front_sprite = pygame.image.load(opponent_pokemon.sprite_face).convert_alpha()
         opponent_front_sprite = pygame.transform.scale(opponent_front_sprite, (200, 200))
     except Exception as e:
-        print(f"Opponent front sprite not found → fallback")
-        opponent_front_sprite = pygame.image.load("pikachu.png").convert_alpha()
+        print(f"Opponent front sprite not found - fallback")
+        opponent_front_sprite = pygame.image.load("assets/spritePokemonFace_PokeAPI/25_pikachu_face.png").convert_alpha()
         opponent_front_sprite = pygame.transform.scale(opponent_front_sprite, (200, 200))
 
     # Background
-    background = pygame.image.load("assets/image (23).jpg").convert()
+    background = pygame.image.load("assets/ground/image (23).jpg").convert()
     background = pygame.transform.scale(background, (1000, 700))
 
     # Colors
@@ -577,7 +577,7 @@ def run_battle(player_pokemon):
                             damage = combat.player_attack()
                             if damage > 0:
                                 sound_attack.play()
-                                print(f"{player_pokemon.nom} inflige {damage} dégâts à {opponent_pokemon.nom}")
+                                print(f"{player_pokemon.nom} inflige {damage} degats a {opponent_pokemon.nom}")
 
                                 # Immediate redraw
                                 screen.blit(background, (0, 0))
@@ -621,7 +621,7 @@ def run_battle(player_pokemon):
             damage = combat.opponent_attack()
             if damage > 0:
                 sound_attack_ops.play()
-                print(f"{opponent_pokemon.nom} inflige {damage} dégâts à {player_pokemon.nom}")
+                print(f"{opponent_pokemon.nom} inflige {damage} degats a {player_pokemon.nom}")
                 pygame.time.wait(1000)
 
         # Check winner
@@ -635,19 +635,19 @@ def run_battle(player_pokemon):
                 # Gagner XP et monter de niveau
                 leveled_up = player_pokemon.gain_xp(100)
                 if leveled_up:
-                    print(f"🎉 {player_pokemon.nom} est maintenant niveau {player_pokemon.level}!")
+                    print(f"[!] {player_pokemon.nom} est maintenant niveau {player_pokemon.level}!")
                 
                 # Ajouter l'adversaire au Pokédex
                 is_new_capture = pokedex_manager.add_pokemon(opponent_pokemon)
-                print(f"✨ Pokémon ajouté au Pokédex ! Nouvelle capture: {is_new_capture}")
+                print(f"[+] Pokemon ajoute au Pokedex ! Nouvelle capture: {is_new_capture}")
                 
                 # Vérifier évolution
                 evolution_data = evolution_system.can_evolve(player_pokemon, player_pokemon.level)
                 if evolution_data:
-                    print(f"🌟 {player_pokemon.nom} peut évoluer en {evolution_data['evolves_to']} !")
+                    print(f"[*] {player_pokemon.nom} peut evoluer en {evolution_data['evolves_to']} !")
                     evolution_system.show_evolution_screen(screen, player_pokemon.nom, evolution_data["evolves_to"])
                     player_pokemon = evolution_system.evolve_pokemon(player_pokemon, evolution_data)
-                    print(f"✅ Évolution réussie ! Bienvenue {player_pokemon.nom}")
+                    print(f"[OK] Evolution reussie ! Bienvenue {player_pokemon.nom}")
                 
                 # Écran de victoire
                 show_victory_screen(screen, winner.nom, True, is_new_capture)
@@ -672,10 +672,9 @@ def run_battle(player_pokemon):
         text = font_health.render(f"{player_pokemon.nom}: {player_pokemon.life}/{player_pokemon.max_life}", True, DARK_GRAY)
         screen.blit(text, (player_bar_x, player_bar_y - 35))
 
-    # Fermer la musique mais PAS pygame
-    pygame.mixer.music.stop()
-    print("Combat terminé - retour au menu")
-    # Ne pas faire pygame.quit() ici ! On retourne juste au menu
+        # Opponent health bar
+        ratio = opponent_pokemon.life / opponent_pokemon.max_life if opponent_pokemon.max_life > 0 else 0
+        width = int(opp_bar_w * ratio)
         color = GREEN if ratio > 0.5 else (255, 200, 0) if ratio > 0.25 else RED
         pygame.draw.rect(screen, GRAY, (opp_bar_x, opp_bar_y, opp_bar_w, opp_bar_h))
         pygame.draw.rect(screen, color, (opp_bar_x, opp_bar_y, width, opp_bar_h))
@@ -695,6 +694,8 @@ def run_battle(player_pokemon):
         pygame.display.flip()
         clock.tick(60)
 
+    # Fermer proprement la fenêtre de combat
     pygame.mixer.music.stop()
-    pygame.quit()
-    print("Combat terminé - retour au menu")
+    pygame.display.quit()  # Fermer la fenêtre de combat
+    print("Combat termine - retour au menu")
+    # Le menu va recréer son propre display

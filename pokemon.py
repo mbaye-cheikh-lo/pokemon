@@ -44,7 +44,7 @@ class Pokemon:
             self.life = self.max_life  # Restaurer la vie à fond
             self.power2 += 5
             self.defense += 3
-            print(f"🌟 {self.nom} monte au niveau {self.level} !")
+            print(f"*** {self.nom} monte au niveau {self.level} !")
             return True  # A monté de niveau
         return False  # Pas de montée de niveau
 
@@ -71,7 +71,7 @@ tortank = Pokemon(
     power2=55,
     image="assets/spritePokemonDos_PokeAPI/9_tortank_dos.png",
     xp=100,
-    imgback="assets/pokemon_bw___night.jpg"
+    imgback="assets/ground/pokemon_bw___night.jpg"
 )
 
 

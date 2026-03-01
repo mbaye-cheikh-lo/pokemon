@@ -135,10 +135,10 @@ def main():
         pygame.display.flip()
         clock.tick(FPS)
 
-    pygame.quit()
+    pygame.display.quit()  # Fermer seulement le display, pas pygame entier
 
     if selected_pokemon:
-        print("\nSelected Pokémon:")
+        print("\nSelected Pokemon:")
         selected_pokemon.show_info()
         return selected_pokemon
     else:

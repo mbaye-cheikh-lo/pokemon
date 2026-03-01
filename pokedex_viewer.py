@@ -143,3 +143,6 @@ def show_pokedex():
         
         pygame.display.flip()
         clock.tick(60)
+    
+    # Fermer seulement le display avant de retourner
+    pygame.display.quit()

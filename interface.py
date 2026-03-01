@@ -75,6 +75,8 @@ pygame.mixer.music.set_volume(0.05)
 # MAIN MENU LOOP
 def main_menu():
     """Boucle principale du menu - retourne False pour quitter"""
+    global screen, background  # Important: accès aux variables globales
+    
     running = True
     while running:
         clock.tick(60)
@@ -97,21 +99,58 @@ def main_menu():
                 return False
 
             if play_button.is_clicked(event):
-                print("PLAY button pressed → launching selection")
-                selected_pokemon = choose_pokemon()  # Launch selection screen
+                print("PLAY button pressed - launching selection")
+                
+                # Fermer le display du menu avant la sélection
+                pygame.display.quit()
+                
+                # Lancer la sélection
+                selected_pokemon = choose_pokemon()  # Lance sa propre fenêtre et la ferme
+                
                 if selected_pokemon:
-                    print(f"Selected Pokémon: {selected_pokemon.nom}")
-                    # Launch battle directly
+                    print(f"Selected Pokemon: {selected_pokemon.nom}")
+                    
+                    # Lancer le combat (il va créer et fermer sa propre fenêtre)
                     run_battle(selected_pokemon)
-                    # Après le combat, on revient au menu (pas de pygame.quit())
+                    
+                    # Après le combat, recréer le menu
+                    print("Retour au menu principal...")
+                    
+                    # Réinitialiser pygame display pour le menu
+                    pygame.display.init()
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+                    pygame.display.set_caption("Pokemon - Menu")
+                    
+                    # Recharger le background
+                    background = pygame.image.load("assets/ground/image (28).jpg").convert()
+                    background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+                    
                     # Redémarrer la musique du menu
                     pygame.mixer.music.load("assets/song_and_sound/Pokemon Red_Blue Opening.mp3")
                     pygame.mixer.music.play(-1)
                     pygame.mixer.music.set_volume(0.05)
+                    
+                    print("Menu principal recharge avec succes")
+                else:
+                    # Si aucun Pokemon sélectionné, recréer le menu
+                    pygame.display.init()
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+                    pygame.display.set_caption("Pokemon - Menu")
 
             if pokedex_button.is_clicked(event):
-                print("POKÉDEX button pressed → opening Pokédex")
+                print("POKEDEX button pressed - opening Pokedex")
+                
+                # Fermer le display du menu
+                pygame.display.quit()
+                
+                # Ouvrir le Pokedex (il va créer et fermer sa propre fenêtre)
                 show_pokedex()
+                
+                # Recréer le display du menu
+                pygame.display.init()
+                screen = pygame.display.set_mode((WIDTH, HEIGHT))
+                pygame.display.set_caption("Pokemon - Menu")
+                print("Retour du Pokedex au menu")
 
             if quit_button.is_clicked(event):
                 print("Quitting game")
