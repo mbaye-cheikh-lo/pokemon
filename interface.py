@@ -84,11 +84,6 @@ def main_menu():
         # Background
         screen.blit(background, (0, 0))
 
-        # TITLE
-        title_text = title_font.render("POKÉMON", True, BLACK)
-        title_rect = title_text.get_rect(center=(WIDTH//2, 150))
-        screen.blit(title_text, title_rect)
-
         # BUTTONS
         play_button.draw()
         pokedex_button.draw()
