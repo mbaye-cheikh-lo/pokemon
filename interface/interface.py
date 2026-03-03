@@ -1,0 +1,165 @@
+# interface.py
+# Main menu screen - launches selection on PLAY button
+
+import pygame
+import sys
+from draw_choice import main as choose_pokemon  # import selection screen
+from draw2 import run_battle  # import battle screen function
+from pokedex_viewer import show_pokedex  # import Pokédex viewer
+
+pygame.init()
+
+# CONFIG
+WIDTH = 1000
+HEIGHT = 700
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Pokemon - Menu")
+clock = pygame.time.Clock()
+
+# Background
+background = pygame.image.load("assets/ground/image (28).jpg").convert()
+background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+
+# COLORS
+BLUE = (50, 150, 255)
+DARK_BLUE = (30, 100, 200)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
+
+# FONTS
+title_font = pygame.font.SysFont("arial", 80, bold=True)
+button_font = pygame.font.SysFont("arial", 40, bold=True)
+
+# BUTTON CLASS
+class Button:
+    def __init__(self, text, x, y, width, height):
+        self.text = text
+        self.rect = pygame.Rect(x, y, width, height)
+
+    def draw(self):
+        mouse_pos = pygame.mouse.get_pos()
+
+        # Hover effect
+        if self.rect.collidepoint(mouse_pos):
+            pygame.draw.rect(screen, DARK_BLUE, self.rect, border_radius=12)
+        else:
+            pygame.draw.rect(screen, BLUE, self.rect, border_radius=12)
+
+        pygame.draw.rect(screen, BLACK, self.rect, 3, border_radius=12)
+
+        text_surface = button_font.render(self.text, True, WHITE)
+        text_rect = text_surface.get_rect(center=self.rect.center)
+        screen.blit(text_surface, text_rect)
+
+    def is_clicked(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(event.pos):
+                return True
+        return False
+
+
+# CREATE BUTTONS
+button_width = 300
+button_height = 80
+
+play_button = Button("JOUER", WIDTH//2 - button_width//2, 300, button_width, button_height)
+pokedex_button = Button("POKÉDEX", WIDTH//2 - button_width//2, 420, button_width, button_height)
+quit_button = Button("QUITTER", WIDTH//2 - button_width//2, 540, button_width, button_height)
+
+pygame.mixer.init()
+pygame.mixer.music.load("assets/song_and_sound/Pokemon Red_Blue Opening.mp3")
+pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(0.05)
+
+# MAIN MENU LOOP
+def main_menu():
+    """Boucle principale du menu - retourne False pour quitter"""
+    global screen, background  # Important: accès aux variables globales
+    
+    running = True
+    while running:
+        clock.tick(60)
+
+        # Background
+        screen.blit(background, (0, 0))
+
+        # BUTTONS
+        play_button.draw()
+        pokedex_button.draw()
+        quit_button.draw()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+
+            if play_button.is_clicked(event):
+                print("PLAY button pressed - launching selection")
+                
+                # Fermer le display du menu avant la sélection
+                pygame.display.quit()
+                
+                # Lancer la sélection
+                selected_pokemon = choose_pokemon()  # Lance sa propre fenêtre et la ferme
+                
+                if selected_pokemon:
+                    print(f"Selected Pokemon: {selected_pokemon.nom}")
+                    
+                    # Lancer le combat (il va créer et fermer sa propre fenêtre)
+                    run_battle(selected_pokemon)
+                    
+                    # Après le combat, recréer le menu
+                    print("Retour au menu principal...")
+                    
+                    # Réinitialiser pygame display pour le menu
+                    pygame.display.init()
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+                    pygame.display.set_caption("Pokemon - Menu")
+                    
+                    # Recharger le background
+                    background = pygame.image.load("assets/ground/image (28).jpg").convert()
+                    background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+                    
+                    # Redémarrer la musique du menu
+                    pygame.mixer.music.load("assets/song_and_sound/Pokemon Red_Blue Opening.mp3")
+                    pygame.mixer.music.play(-1)
+                    pygame.mixer.music.set_volume(0.05)
+                    
+                    print("Menu principal recharge avec succes")
+                else:
+                    # Si aucun Pokemon sélectionné, recréer le menu
+                    pygame.display.init()
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+                    pygame.display.set_caption("Pokemon - Menu")
+
+            if pokedex_button.is_clicked(event):
+                print("POKEDEX button pressed - opening Pokedex")
+                
+                # Fermer le display du menu
+                pygame.display.quit()
+                
+                # Ouvrir le Pokedex (il va créer et fermer sa propre fenêtre)
+                show_pokedex()
+                
+                # Recréer le display du menu
+                pygame.display.init()
+                screen = pygame.display.set_mode((WIDTH, HEIGHT))
+                pygame.display.set_caption("Pokemon - Menu")
+                print("Retour du Pokedex au menu")
+
+            if quit_button.is_clicked(event):
+                print("Quitting game")
+                return False
+
+        pygame.display.flip()
+    
+    return False
+
+# Lancer le menu principal
+if __name__ == "__main__":
+    keep_running = True
+    while keep_running:
+        keep_running = main_menu()
+    
+    pygame.quit()
+    sys.exit()

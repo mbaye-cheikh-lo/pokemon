@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+coverage.xml
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Pygame / multimedia
+*.wav
+*.mp3
+*.ogg
+*.flac
+*.m4a
+*.aiff
+
+# Images / assets volumineux (à activer si tu veux)
+# assets/
+# *.jpg
+# *.png
+# *.gif
+
+# Logs & temporaires
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+# IDE / éditeurs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Autres
+*.swp
+*~
