@@ -1,4 +1,5 @@
 @echo off
-echo Lancement du jeu Pokemon...
-C:\Python313\python.exe interface.py
+cd /d "%~dp0"
+echo Lancement de Pokemon (version finale)...
+C:\Users\Utilisateur\AppData\Local\Programs\Python\Python313\python.exe interface/interface.py
 pause
