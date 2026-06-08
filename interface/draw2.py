@@ -761,7 +761,7 @@ def run_battle(player_pokemon):
                 evolution_data = evolution_system.can_evolve(player_pokemon, player_pokemon.level)
                 if evolution_data:
                     print(f"[*] {player_pokemon.nom} peut evoluer en {evolution_data['evolves_to']} !")
-                    evolution_system.show_evolution_screen(screen, player_pokemon.nom, evolution_data["evolves_to"])
+                    evolution_system.show_evolution_screen(screen, player_pokemon.nom, evolution_data["evolves_to"], player_pokemon.sprite_dos)
                     player_pokemon = evolution_system.evolve_pokemon(player_pokemon, evolution_data)
                     print(f"[OK] Evolution reussie ! Bienvenue {player_pokemon.nom}")
                 
