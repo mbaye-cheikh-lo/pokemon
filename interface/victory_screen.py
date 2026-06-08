@@ -155,8 +155,8 @@ def show_victory_screen(screen, winner_name, is_player_winner, is_new_capture=Fa
                 capture_rect = capture_text.get_rect(center=(500, 430))
                 screen.blit(capture_text, capture_rect)
                 
-                # Badge "NEW"
-                badge_rect = pygame.Rect(650, 420, 70, 30)
+                # Badge "NEW" centré entre XP (y=380) et capture (y=430)
+                badge_rect = pygame.Rect(465, 390, 70, 30)
                 pygame.draw.rect(screen, RED, badge_rect, border_radius=8)
                 pygame.draw.rect(screen, GOLD, badge_rect, 2, border_radius=8)
                 badge_text = small_font.render("NEW!", True, WHITE)
