@@ -203,11 +203,15 @@ class EvolutionSystem:
         PHASE3 = 180   # New Pokemon reveal
         TOTAL  = 300   # Congratulations (skippable)
 
-        frame          = 0
-        running        = True
-        music_started  = False
+        frame   = 0
+        running = True
 
-        pygame.mixer.music.stop()
+        try:
+            pygame.mixer.music.load("assets/song_and_sound/Champion Battle - Pokémon Red_Blue_Yellow Soundtrack.mp3")
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(0.15)
+        except Exception:
+            pass
 
         while running and frame < TOTAL:
             for event in pygame.event.get():
@@ -277,14 +281,6 @@ class EvolutionSystem:
 
             # ── Phase 4: Congratulations ──────────────────────────────────
             else:
-                if not music_started:
-                    try:
-                        pygame.mixer.music.load("assets/song_and_sound/Champion Battle - Pokémon Red_Blue_Yellow Soundtrack.mp3")
-                        pygame.mixer.music.play(-1)
-                        pygame.mixer.music.set_volume(0.15)
-                    except Exception:
-                        pass
-                    music_started = True
                 p = (frame - PHASE3) / (TOTAL - PHASE3)
                 screen.fill((10, 5, 20))
 
