@@ -95,6 +95,7 @@ def _make_silhouette(sprite):
 class EvolutionSystem:
     def __init__(self):
         self.battle_count = {}
+        self.evolved_roster = {}  # {base_name: {"key": new_name, "data": [...], "sprite_id": "..."}}
 
     def can_evolve(self, pokemon, current_level=1):
         if pokemon.nom not in EVOLUTION_DATA:
@@ -138,6 +139,14 @@ class EvolutionSystem:
             evolved.sprite_dos = f"assets/spritePokemonDos_PokeAPI/{sid}_{new_name.lower()}_dos.png"
         elif hasattr(pokemon, 'sprite_dos'):
             evolved.sprite_dos = pokemon.sprite_dos
+
+        # Register in session roster so selection screen shows the evolved form
+        sprite_id = EVOLUTION_SPRITE_IDS.get(new_name, "1")
+        self.evolved_roster[pokemon.nom] = {
+            "key": new_name,
+            "data": [new_name, evolution_data["type"], evolution_data["power"], evolution_data["defense"], evolution_data["life"]],
+            "sprite_id": sprite_id,
+        }
 
         return evolved
 
@@ -194,8 +203,11 @@ class EvolutionSystem:
         PHASE3 = 180   # New Pokemon reveal
         TOTAL  = 300   # Congratulations (skippable)
 
-        frame   = 0
-        running = True
+        frame          = 0
+        running        = True
+        music_started  = False
+
+        pygame.mixer.music.stop()
 
         while running and frame < TOTAL:
             for event in pygame.event.get():
@@ -265,6 +277,14 @@ class EvolutionSystem:
 
             # ── Phase 4: Congratulations ──────────────────────────────────
             else:
+                if not music_started:
+                    try:
+                        pygame.mixer.music.load("assets/song_and_sound/Champion Battle - Pokémon Red_Blue_Yellow Soundtrack.mp3")
+                        pygame.mixer.music.play(-1)
+                        pygame.mixer.music.set_volume(0.15)
+                    except Exception:
+                        pass
+                    music_started = True
                 p = (frame - PHASE3) / (TOTAL - PHASE3)
                 screen.fill((10, 5, 20))
 

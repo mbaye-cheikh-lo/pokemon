@@ -58,6 +58,20 @@ def draw_text(surface, text, font, color, x, y, center=False):
     surface.blit(text_surface, rect)
 
 def main():
+    from evolution_system import evolution_system as _evo
+    pokedex_data = load_pokedex_data()
+    id_map = dict(POKEDEX_ID)
+    updated = {}
+    for _k, _d in pokedex_data.items():
+        if _k in _evo.evolved_roster:
+            _ei = _evo.evolved_roster[_k]
+            updated[_ei["key"]] = _ei["data"]
+            id_map[_ei["key"]] = _ei["sprite_id"]
+        else:
+            updated[_k] = _d
+    pokedex_data = updated
+    pokemon_keys = list(pokedex_data.keys())
+
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Sélection Pokémon")
@@ -94,8 +108,8 @@ def main():
                     key = pokemon_keys[i]  # ex: "Salameche"
                     data = pokedex_data[key]
 
-                    # Get ID from fixed map (fallback to 1)
-                    id_part = POKEDEX_ID.get(key, "1")
+                    # Get ID from local map (includes evolved forms)
+                    id_part = id_map.get(key, "1")
 
                     # Create instance with real stats from JSON
                     selected_pokemon = Pokemon(

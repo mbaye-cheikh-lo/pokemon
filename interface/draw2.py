@@ -476,6 +476,17 @@ def _show_switch_overlay(screen, snapshot, font_ref):
         "Bulbizarre": "1", "Rondoudou": "39", "Onix": "95",
     }
 
+    # Apply session evolutions so the overlay shows evolved forms
+    updated = {}
+    for _k, _d in pokedex_data.items():
+        if _k in evolution_system.evolved_roster:
+            _ei = evolution_system.evolved_roster[_k]
+            updated[_ei["key"]] = _ei["data"]
+            POKEDEX_ID[_ei["key"]] = _ei["sprite_id"]
+        else:
+            updated[_k] = _d
+    pokedex_data = updated
+
     WHITE = (255, 255, 255)
     PANEL = (40, 50, 70)
     HOVER = (70, 80, 100)
