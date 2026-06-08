@@ -460,6 +460,100 @@ from pokemon import Pokemon
 from pokedex_manager import pokedex_manager
 from victory_screen import show_victory_screen
 from evolution_system import evolution_system
+import json
+
+
+def _show_switch_overlay(screen, snapshot, font_ref):
+    """In-battle Pokemon switch overlay. Returns new Pokemon or None if cancelled."""
+    try:
+        with open("pokedex.json", "r", encoding="utf-8") as f:
+            pokedex_data = json.load(f)
+    except Exception:
+        return None
+
+    POKEDEX_ID = {
+        "Pikachu": "25", "Salameche": "4", "Carapuce": "7",
+        "Bulbizarre": "1", "Rondoudou": "39", "Onix": "95",
+    }
+
+    WHITE = (255, 255, 255)
+    PANEL = (40, 50, 70)
+    HOVER = (70, 80, 100)
+    BLUE = (120, 190, 255)
+    BORDER = (100, 130, 190)
+
+    font_title = pygame.font.SysFont("arial", 32, bold=True)
+    font_small = pygame.font.SysFont("consolas", 18)
+
+    overlay = pygame.Surface((1000, 700), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 180))
+
+    keys = list(pokedex_data.keys())
+    clock = pygame.time.Clock()
+    running = True
+    result = None
+
+    while running:
+        mouse_pos = pygame.mouse.get_pos()
+        clicked = False
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                clicked = True
+
+        screen.blit(snapshot, (0, 0))
+        screen.blit(overlay, (0, 0))
+
+        title = font_title.render("Choisir un Pokemon", True, WHITE)
+        screen.blit(title, title.get_rect(center=(500, 50)))
+
+        hint = font_small.render("ESC = Annuler", True, (180, 180, 180))
+        screen.blit(hint, (20, 670))
+
+        for i, key in enumerate(keys):
+            rect = pygame.Rect(100, 100 + i * 90, 800, 80)
+            hovered = rect.collidepoint(mouse_pos)
+
+            if hovered and clicked:
+                data = pokedex_data[key]
+                id_part = POKEDEX_ID.get(key, "1")
+                new_poke = Pokemon(
+                    nom=data[0],
+                    attack_name="Attaque basique",
+                    life=data[4],
+                    type_=data[1],
+                    defense=data[3],
+                    power2=data[2],
+                    image="",
+                    xp=100,
+                    imgback=""
+                )
+                new_poke.sprite_dos = f"assets/spritePokemonDos_PokeAPI/{id_part}_{key.lower()}_dos.png"
+                result = new_poke
+                running = False
+                break
+
+            color = HOVER if hovered else PANEL
+            pygame.draw.rect(screen, color, rect, border_radius=10)
+            pygame.draw.rect(screen, BORDER, rect, 2, border_radius=10)
+
+            data = pokedex_data[key]
+            name_surf = font_ref.render(data[0], True, WHITE)
+            type_surf = font_small.render(f"Type: {data[1]}", True, BLUE)
+            stats_surf = font_small.render(f"Atk:{data[2]}  Def:{data[3]}  PV:{data[4]}", True, (200, 200, 200))
+            screen.blit(name_surf, (rect.left + 20, rect.top + 8))
+            screen.blit(type_surf, (rect.left + 20, rect.top + 38))
+            screen.blit(stats_surf, (rect.left + 20, rect.top + 57))
+
+        pygame.display.flip()
+        clock.tick(60)
+
+    return result
+
 
 def run_battle(player_pokemon):
     """
@@ -563,6 +657,7 @@ def run_battle(player_pokemon):
 
     # Main battle loop
     running = True
+    fled = False
     while running:
         mouse_pos = pygame.mouse.get_pos()
 
@@ -616,8 +711,29 @@ def run_battle(player_pokemon):
 
                                 pygame.time.wait(1200)
 
+                        elif opt["value"] == 2 and combat.turn % 2 != 0:
+                            snapshot = screen.copy()
+                            new_poke = _show_switch_overlay(screen, snapshot, font_menu)
+                            if new_poke:
+                                player_pokemon = new_poke
+                                combat.player_pokemon = new_poke
+                                try:
+                                    player_back_sprite = pygame.image.load(player_pokemon.sprite_dos).convert_alpha()
+                                    player_back_sprite = pygame.transform.scale(player_back_sprite, (280, 280))
+                                except Exception:
+                                    pass
+                                combat.next_turn()
+
+                        elif opt["value"] == 3 and combat.turn % 2 != 0:
+                            msg_surf = font_menu.render("Fuite reussie !", True, (255, 255, 100))
+                            screen.blit(msg_surf, msg_surf.get_rect(center=(500, 350)))
+                            pygame.display.flip()
+                            pygame.time.wait(1500)
+                            fled = True
+                            running = False
+
         # Opponent turn
-        if combat.turn % 2 == 0:
+        if combat.turn % 2 == 0 and not fled:
             damage = combat.opponent_attack()
             if damage > 0:
                 sound_attack_ops.play()
@@ -626,7 +742,7 @@ def run_battle(player_pokemon):
 
         # Check winner
         winner = combat.check_winner()
-        if winner:
+        if winner and not fled:
             print(f"Gagnant : {winner.nom}")
             is_player_winner = (winner == player_pokemon)
             
