@@ -11,7 +11,7 @@ EVOLUTION_DATA = {
     "Salameche": {
         "evolves_to": "Reptincel",
         "level": 16,
-        "battles": 3,
+        "battles": 1,
         "type": "Feu",
         "power": 64,
         "defense": 58,
@@ -20,7 +20,7 @@ EVOLUTION_DATA = {
     "Reptincel": {
         "evolves_to": "Dracaufeu",
         "level": 36,
-        "battles": 8,
+        "battles": 1,
         "type": "Feu",
         "power": 84,
         "defense": 78,
@@ -29,7 +29,7 @@ EVOLUTION_DATA = {
     "Carapuce": {
         "evolves_to": "Carabaffe",
         "level": 16,
-        "battles": 3,
+        "battles": 1,
         "type": "Eau",
         "power": 63,
         "defense": 80,
@@ -38,7 +38,7 @@ EVOLUTION_DATA = {
     "Carabaffe": {
         "evolves_to": "Tortank",
         "level": 36,
-        "battles": 8,
+        "battles": 1,
         "type": "Eau",
         "power": 83,
         "defense": 100,
@@ -47,7 +47,7 @@ EVOLUTION_DATA = {
     "Bulbizarre": {
         "evolves_to": "Herbizarre",
         "level": 16,
-        "battles": 3,
+        "battles": 1,
         "type": "Plante",
         "power": 62,
         "defense": 63,
@@ -56,7 +56,7 @@ EVOLUTION_DATA = {
     "Herbizarre": {
         "evolves_to": "Florizarre",
         "level": 36,
-        "battles": 8,
+        "battles": 1,
         "type": "Plante",
         "power": 82,
         "defense": 83,
@@ -65,7 +65,7 @@ EVOLUTION_DATA = {
     "Pikachu": {
         "evolves_to": "Raichu",
         "level": 20,
-        "battles": 5,
+        "battles": 1,
         "type": "Electrik",
         "power": 90,
         "defense": 55,
@@ -201,7 +201,7 @@ class EvolutionSystem:
         PHASE1 = 90    # Flash / silhouette flicker
         PHASE2 = 120   # Full white burst
         PHASE3 = 180   # New Pokemon reveal
-        TOTAL  = 300   # Congratulations (skippable)
+        TOTAL  = 450   # Congratulations (skippable)
 
         frame   = 0
         running = True
