@@ -556,7 +556,7 @@ def run_battle(player_pokemon):
     pygame.mixer.music.set_volume(0.05)
 
     sound_attack_ops= pygame.mixer.Sound("assets/song_and_sound/Ember.wav")
-    sound_attack_ops.set_volume(0.1)
+    sound_attack_ops.set_volume(0.6)
 
     sound_attack = pygame.mixer.Sound("assets/song_and_sound/MegaDrain.wav")
     sound_attack.set_volume(0.6)
