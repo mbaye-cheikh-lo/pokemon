@@ -201,7 +201,7 @@ class EvolutionSystem:
         PHASE1 = 90    # Flash / silhouette flicker
         PHASE2 = 120   # Full white burst
         PHASE3 = 180   # New Pokemon reveal
-        TOTAL  = 450   # Congratulations (skippable)
+        TOTAL  = 510   # Congratulations (skippable)
 
         frame   = 0
         running = True

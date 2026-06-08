@@ -63,12 +63,12 @@ def main():
     id_map = dict(POKEDEX_ID)
     updated = {}
     for _k, _d in pokedex_data.items():
-        if _k in _evo.evolved_roster:
-            _ei = _evo.evolved_roster[_k]
-            updated[_ei["key"]] = _ei["data"]
+        cur_key, cur_data = _k, _d
+        while cur_key in _evo.evolved_roster:
+            _ei = _evo.evolved_roster[cur_key]
             id_map[_ei["key"]] = _ei["sprite_id"]
-        else:
-            updated[_k] = _d
+            cur_key, cur_data = _ei["key"], _ei["data"]
+        updated[cur_key] = cur_data
     pokedex_data = updated
     pokemon_keys = list(pokedex_data.keys())
 

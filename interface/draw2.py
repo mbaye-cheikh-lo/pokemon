@@ -479,12 +479,12 @@ def _show_switch_overlay(screen, snapshot, font_ref):
     # Apply session evolutions so the overlay shows evolved forms
     updated = {}
     for _k, _d in pokedex_data.items():
-        if _k in evolution_system.evolved_roster:
-            _ei = evolution_system.evolved_roster[_k]
-            updated[_ei["key"]] = _ei["data"]
+        cur_key, cur_data = _k, _d
+        while cur_key in evolution_system.evolved_roster:
+            _ei = evolution_system.evolved_roster[cur_key]
             POKEDEX_ID[_ei["key"]] = _ei["sprite_id"]
-        else:
-            updated[_k] = _d
+            cur_key, cur_data = _ei["key"], _ei["data"]
+        updated[cur_key] = cur_data
     pokedex_data = updated
 
     WHITE = (255, 255, 255)
